@@ -1,7 +1,10 @@
 #include "mem.h"
 
 void mem::patchAt(BYTE* dst, BYTE* src, unsigned int size, HANDLE hProc) {
-
+	DWORD oldPermissions;
+	VirtualProtectEx(hProc, dst, size, PAGE_EXECUTE_READWRITE, &oldPermissions);
+	WriteProcessMemory(hProc, dst, src, size, nullptr); 
+	VirtualProtectEx(hProc, dst, size, oldPermissions, &oldPermissions);
 }
 
 

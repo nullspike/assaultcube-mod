@@ -1,20 +1,36 @@
-// Ac Mod.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// main.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include <windows.h>
+#include "proc.h"
+#include "mem.h"
 #include <iostream>
+#include <vector>
 
 int main()
 {
-    std::cout << "Hello World!\n";
+
+    DWORD pid = proc::getProcessId(L"ac_client.exe");
+
+    if (0 == pid) {
+        std::cout << "[-] process not found\n"; 
+        return 0;
+    }
+
+    uintptr_t baseAddr = proc::getModuleBaseAddr(pid, L"ac_client.exe");
+    HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, NULL, pid);
+
+    if (!hProc) {
+        std::cout << "[-] an error had occured when opening the process"; 
+        return 0;
+    }
+
+    uintptr_t entityPtr = baseAddr + 0x17E0A8;
+    std::vector<unsigned int> arAmmoOffsets = { 0x140 };
+    std::vector<unsigned int> pistolAmmoOffsets = { 0x12c };
+    std::vector<unsigned int> healthOffsets = { 0xec };
+    uintptr_t arAmmoAddr = proc::findDMA(hProc, entityPtr, pistolAmmoOffsets);
+    uintptr_t pistolAmmoAddr = proc::findDMA(hProc, entityPtr, pistolAmmoOffsets);
+    uintptr_t healthAddr = proc::findDMA(hProc, entityPtr, pistolAmmoOffsets);
+
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

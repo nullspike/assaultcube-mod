@@ -1,7 +1,7 @@
 #pragma once
 
-#include <TlHelp32.h>
 #include <windows.h>
+#include <TlHelp32.h>
 #include <vector>
 
 namespace proc {

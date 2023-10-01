@@ -1,13 +1,13 @@
 #include "proc.h"
 
-DWORD getProcessId(const wchar_t* name) {
+DWORD proc::getProcessId(const wchar_t* name) {
 	
 }
 
-uintptr_t getModuleBaseAddr(DWORD pid, const wchar_t* module) {
+uintptr_t proc::getModuleBaseAddr(DWORD pid, const wchar_t* module) {
 
 }
 
-uintptr_t findDMA(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> offsets) {
+uintptr_t proc::findDMA(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> offsets) {
 
 }

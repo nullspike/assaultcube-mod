@@ -30,6 +30,28 @@ DWORD proc::getProcessId(const wchar_t* name) {
 
 uintptr_t proc::getModuleBaseAddr(DWORD pid, const wchar_t* module) {
 
+	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, 0);
+
+	if (INVALID_HANDLE_VALUE == hSnap) return 0;
+
+	uintptr_t address = NULL;
+	MODULEENTRY32 me; 
+	me.dwSize = sizeof(MODULEENTRY32); 
+	DWORD hResult = Module32First(hSnap, &me); 
+
+	if (!hResult) return NULL;
+
+	while (hResult) {
+		if (!_wcsicmp(module, me.szModule)) {
+			address = (uintptr_t)me.modBaseAddr;
+			break;
+		}
+
+		hResult = Module32Next(hSnap, &me);
+	}
+
+	CloseHandle(hSnap);
+	return address;
 }
 
 uintptr_t proc::findDMA(HANDLE hProc, uintptr_t ptr, std::vector<unsigned int> offsets) {
